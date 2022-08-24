@@ -2,7 +2,7 @@
 
 #include <RcppArmadillo.h>
 #include <limits>
-#include <omp.h>
+#include </opt/homebrew/opt/libomp/include/omp.h>
 
 
 using namespace Rcpp;

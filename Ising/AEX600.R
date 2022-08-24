@@ -8,11 +8,14 @@ library(xtable)
 library(snow)
 library(doParallel)
 library(foreach)
-source("RFtns.R")
 
+
+setwd('/Users/bokgyeongkang/work/Diagnostics/Ising')
 #========================================================================
 # Call a dataset, saved images, and functions
 #========================================================================
+source("RFtns.R")
+
 load("data/sim020Ising.RData")
 # load("data/sim043Ising.RData")
 
@@ -21,12 +24,7 @@ load("data/sim020Ising.RData")
 # for ACD
 #========================================================================
 # number of particles
-# dd = 200
-# dd = 300
-# dd = 400
-dd = 450
-# dd = 500
-# dd = 600
+dd = 600
 
 
 aux.par = rep(0, dd)

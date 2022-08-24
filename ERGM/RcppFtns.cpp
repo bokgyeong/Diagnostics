@@ -1,14 +1,9 @@
-// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4; indent-tabs-mode: nil; -*-
-
-
-// we only include RcppArmadillo.h which pulls Rcpp.h in for us
 // [[Rcpp::depends("RcppArmadillo")]]
-
 
 #include <RcppArmadillo.h>
 #include <limits>
-#include <omp.h>
-// #define min(x,y) (((x) < (y)) ? (x) : (y))
+#include </opt/homebrew/opt/libomp/include/omp.h>
+
 
 using namespace std;
 using namespace Rcpp;
