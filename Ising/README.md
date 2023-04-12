@@ -1,4 +1,4 @@
-Supplemental Code for the Ising model
+Ising model
 ========
 
 
