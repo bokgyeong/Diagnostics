@@ -1,4 +1,4 @@
 # Supplemental Code for "Diagnostics for Monte Carlo algorithms for models with intractable normalising functions."
 Authors: Bokgyeong Kang, John Hughes, and Murali Haran
 
-This repository will contain source code and supplemental materials from the manuscript, "Diagnostics for Monte Carlo algorithms for models with intractable normalising functions."
+This repository will contain source code and supplemental materials from the manuscript, "Diagnostics for Monte Carlo algorithms for models with intractable normalizing functions."
