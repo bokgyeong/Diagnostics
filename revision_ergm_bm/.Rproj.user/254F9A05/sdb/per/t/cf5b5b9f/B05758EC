@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "### B2 and AIKSD for thinned samples -------------------------------------------------\nrm(list=ls())\nload(\"b2Liang30_thin.RData\")\nload(\"aiksdLiang30In1_thin.RData\")\nload(\"aiksdLiang30In3_thin.RData\")\nload(\"aiksdLiang30In5_thin.RData\")\nload(\"aiksdLiang30In10_thin.RData\")\nload(\"aiksdLiang30In30_thin.RData\")\nload(\"aiksdLiang30In50_thin.RData\")\nload(\"aiksdLiang30In70_thin.RData\")\nload(\"aiksdLiang30In100_thin.RData\")\n\n\n\nNin = c(1, 3, 5, 10, 30, 50, 70, 100)\naiksd = list(aiksdLiangIn1, aiksdLiangIn3, aiksdLiangIn5, aiksdLiangIn30, aiksdLiangIn50, aiksdLiangIn70, aiksdLiangIn100)\nylimitbart = c(0, max(unlist(bartLiang)))\nylimitaiksd = c(0, max(unlist(aiksd)))\n\n\nlayout(matrix(c(1,2,3), ncol=3), widths = c(0.43,0.43,0.14))\npar(mar = c(3.5, 3, 1, 1))\n\nplot(regint, bartLiang[[1]], type = \"l\", col = 1, ylim = ylimitbart, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(Nin)){\n  lines(regint, bartLiang[[k]], col = k)\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Number of thinned sample points\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"B2\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\n\nplot(regint, aiksd[[1]], type = \"l\", col = 1, lty = 1, ylim = ylimitaiksd, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(aiksd)){\n  lines(regint, aiksd[[k]], col = k)\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Number of thinned sample points\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Approximate IKSD\",side=2,line=2,las=0,outer=F,cex=0.8)\n\n\npar(mar = c(0,0,0,0))\nplot.new()\nlegend('center', col = 1:length(aiksd), lty = 1, cex = 1, inset=0, \n       legend = sapply(Nin, function(i) paste(\"DMH (m=\", i, \")\", sep = \"\")))\n\n\n\n\n\n\n### density plots for thinned sample ---------------------------------\nrm(list=ls())\nload(\"Liang30.RData\")\n\nburn = 10000\nniter = nrow(Liang[[1]])\nLiang = sapply(1:length(Liang), function(i) Liang[[i]][seq(burn+50, niter, by = 50)], simplify = F)\n\npar(mfrow=c(1, 1), mar = c(3.5, 3, 1, 1))\nplot(density(Liang[[1]]), xlab = \"\", ylab = \"\", main = \"\", ylim = c(0, 1.1))\nfor(i in 2:length(Liang)){\n  lines(density(Liang[[i]]), col = i)\n}\nmtext(text=\"Thinned sample of length 20,000\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Marginal density\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\n# legend('topright', col = 1:length(Nin), lty = 1, cex = 0.8, \n#        legend = sapply(Nin, function(i) paste(\"m = \", i, sep = \"\")))\nlegend('topright', col = 1:length(Nin), lty = 1, cex = 0.8, \n       legend = sapply(Nin, function(i) paste(\"DMH (m=\", i, \")\", sep = \"\")))\n\n\n\n# tail probabilities\na = quantile(Liang[[length(Liang)]], probs = 0.025)\nb = quantile(Liang[[length(Liang)]], probs = 0.975)\n\nltp = sapply(1:length(Liang), function(k) sum(Liang[[k]] < a)/length(Liang[[k]]))\nutp = sapply(1:length(Liang), function(k) sum(Liang[[k]] > b)/length(Liang[[k]]))\ntp = data.frame(rbind(ltp, utp))\ncolnames(tp) = sapply(Nin, function(i) paste(\"DMH (m=\", i, \")\", sep = \"\"))\nround(tp,3)\n\n\n",
+    "created" : 1604359089843.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4158815922",
+    "id" : "B05758EC",
+    "lastKnownWriteTime" : 1603910024,
+    "last_content_update" : 1603910024,
+    "path" : "/storage/work/b/bxk487/diagnostics/ergm/magnolia/plotLiang.R",
+    "project_path" : "plotLiang.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

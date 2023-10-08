@@ -1,0 +1,27 @@
+{
+    "id": "6E205CCD",
+    "path": "/storage/work/b/bxk487/diagnostics/revision_comp_bm/dummy7.R",
+    "project_path": "dummy7.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1676949618499.0,
+    "source_on_save": false,
+    "relative_order": 12,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "19,11",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1676985570,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1676985570382,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#PBS -A open\n#PBS -l nodes=1:ppn=20\n#PBS -l pmem=12gb\n#PBS -l walltime=47:50:00\n#PBS -j oe\n#PBS -m abe\n#PBS -M bxk487@psu.edu\n\n\necho \" \"\necho \" \"\necho \"Job started on `hostname` at `date`\"\n\ncd $PBS_O_WORKDIR\n\n\nmodule load gcc/5.3.1 \nmodule load openmpi/1.10.1\n\nmpirun -np 1 -machinefile $PBS_NODEFILE Rscript aiksdLiangIn1_mod.R\n\n\necho \" \"\necho \"Job Ended at `date`\"\necho \" \"\n\n\n\n",
+    "created" : 1604336342383.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2117303352",
+    "id" : "12109A20",
+    "lastKnownWriteTime" : 1604336351,
+    "last_content_update" : 1604336351454,
+    "path" : "~/work/diagnostics/ergm/magnolia/aci_aiksdLiangIn1_mod_mpi.pbs",
+    "project_path" : "aci_aiksdLiangIn1_mod_mpi.pbs",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : " \n \nJob started on comp-sc-0480.acib.production.int.aci.ics.psu.edu at Thu Oct  1 15:11:29 EDT 2020\n\nThe following have been reloaded with a version change:\n  1) gcc/7.3.1 => gcc/5.3.1\n\nFatal error: cannot open file 'IsingLiang.R': No such file or directory\n-------------------------------------------------------\nPrimary job  terminated normally, but 1 process returned\na non-zero exit code.. Per user-direction, the job has been aborted.\n-------------------------------------------------------\n--------------------------------------------------------------------------\nmpirun detected that one or more processes exited with non-zero status, thus causing\nthe job to be terminated. The first process to do so was:\n\n  Process name: [[2163,1],0]\n  Exit code:    2\n--------------------------------------------------------------------------\n \nJob Ended at Thu Oct  1 15:11:29 EDT 2020\n \n",
+    "created" : 1601579619336.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3461987200",
+    "id" : "7B9BFA38",
+    "lastKnownWriteTime" : 1601579489,
+    "last_content_update" : 1601579489,
+    "path" : "~/work/approxKSD/ising/aci_isingLiang_mpi.pbs.o22753976",
+    "project_path" : "aci_isingLiang_mpi.pbs.o22753976",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

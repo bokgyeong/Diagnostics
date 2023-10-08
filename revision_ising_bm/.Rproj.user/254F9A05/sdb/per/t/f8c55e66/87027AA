@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\n# library(coda)\n# source(\"http://personal.psu.edu/muh10/MCMCtut/batchmeans.R\")\nload(\"isingData020.RData\")\n\n#------------------------------------------------------------------------\n# load \n#------------------------------------------------------------------------\nload(\"zMoller020Perf.RData\")\nzMoller = zMoller[seq(2, nrow(zMoller), by = 2),]\n\n\n#------------------------------------------------------------------------\n# compute the diagnostic quantity\n#------------------------------------------------------------------------\n# burn = 0\n# regint = seq(burn+1000, nrow(zMoller), by = 100)\n# z = zMoller\n# \n# bart = rep(NA, length(regint))\n# for(j in 1:length(regint)){\n#   i = regint[j]\n#   # estimate of the information matrix I(theta)\n#   Ihat = mean(z[(burn+1):i,1] - (z[(burn+1):i,2])^2)\n# \n#   # estimate of the J(theta)\n#   Uhat = sapply((burn+1):i, function(ell) Sx - z[ell,2])\n#   Jhat = mean(Uhat^2)\n# \n#   bart[j] = sqrt((Ihat/Jhat - 1)^2)\n# }\n# save(regint, bart, file = \"bartMoller020.RData\")\n\n\n\nload(\"bartMoller020.RData\")\n#------------------------------------------------------------------------\n# plotting\n#------------------------------------------------------------------------\npar(mfrow=c(1, 1), mar = c(3.5, 3, 1, 1))\nplot(regint, bart, type = \"l\", col = 1, ylab = \"\", xlab = \"\", main = \"\")\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"SB\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('topright', col = 1, lty = 1, legend = \"Moller\", cex = 0.8)\n\n\n\n\n#------------------------------------------------------------------------\n# comparison with aKSD\n#------------------------------------------------------------------------\nload(\"ksdMoller020.RData\")\naksd = list(aKSDMoller)\n\n### Plot\npar(mfrow=c(1, 2), mar = c(3.5, 3, 1, 1))\n\n# ylimit = c(0, max(unlist(bart)))\nylimit = c(0, 0.15)\nplot(regint, bart, type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Second Bartlett\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\n# legend('topright', col = 1, lty = 1, legend = \"Moller\", cex = 0.8)\n\n\nylimit = c(0, max(unlist(aksd)))\nplot(regint, aksd[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Approximate IMQ KSD\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\n# legend('topright', col = 1:length(aksd), lty = 1, legend = nInner, cex = 0.8)\n\n\n",
+    "created" : 1600885988174.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3118809321",
+    "id" : "87027AA",
+    "lastKnownWriteTime" : 1600908695,
+    "last_content_update" : 1600908695035,
+    "path" : "~/work/approxKSD/ising/bartMoller.R",
+    "project_path" : "bartMoller.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

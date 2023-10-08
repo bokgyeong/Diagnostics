@@ -1,0 +1,53 @@
+rm(list=ls())
+library(fields)
+library(lattice)
+library(coda)
+library(Rcpp)
+library(RcppArmadillo)
+library(xtable)
+library(DiceKriging)
+library(DiceDesign)
+library(snow)
+library(doParallel)
+library(foreach)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+#========================================================================
+# Call a dataset, saved images, and functions
+#========================================================================
+load("simIsing.RData")
+source("RFtns.R")
+sourceCpp("RcppFtns.cpp")
+
+
+## IS approximation with independent samples
+# LikEm (prior support determined by selected particles)
+# d = c(10, 50, 100, 200)
+# N = c(1000, 2000)
+# ABCLik (same prior as the other algorithms)
+d = c(50, 100, 200)
+# N = c(5000, 10000) # ABCLik
+N = c(1000, 2000) # ABCLik2
+
+tun = cbind(rep(d, each = length(N)), rep(N, length(d)))
+stat = Energy(X)
+Niter = 100000
+
+
+LikEm = list(); timeLikEm = c(); k = 0
+for(i in d){
+  for(j in N){
+    k = k+1
+    
+    ptm = proc.time()[3]
+    # LikEm[[k]] = IsingGPmcmc(Niter, i, j, X, stat, 100, TRUE, 20) # 100 cycles
+    LikEm[[k]] = IsingGPmcmcPrior(Niter, i, j, X, stat, 100, TRUE, 20) # 100 cycles
+    timeLikEm[k] = proc.time()[3] - ptm
+  }
+}
+# save(tun, X, stat, LikEm, timeLikEm, file = 'simLikEm.RData')
+# save(tun, X, stat, LikEm, timeLikEm, file = 'simABCLik.RData')
+save(tun, X, stat, LikEm, timeLikEm, file = 'simABCLik2.RData')
+

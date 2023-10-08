@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\n\n#======================================================================\n# call\n#======================================================================\nload(\"Moller020.RData\")\nload(\"zMoller020Perf.RData\")\n\n\n\n#------------------------------------------------------------------------\n# Plotting\n#------------------------------------------------------------------------\nregint = seq(1000, nrow(Moller), by = 100)\naksd = list(aKSDIn1, aKSDIn3, aKSDIn5, aKSDIn10, aKSDIn30, aKSDIn50, aKSDIn70, aKSDIn100)\nsave(regint, aksd, file = \"sim_aKSD.RData\")\n\nload(\"sim_aKSD.RData\")\n\n### Plot \nylimit = c(0, max(unlist(aksd)))\n# Nin = c(1, 3, 5, 10, 30, 50, 70, 100)\nNin = c(1, 3, 5, 10, 30, 50)\n\nnInner = sapply(1:length(Nin), function(k) paste(\"m = \", Nin[k], sep = \"\"))\n\npar(mfrow=c(1, 1), mar = c(3.5, 3, 1, 1))\nplot(regint, aksd[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(Nin)){\n  lines(regint, aksd[[k]], type = \"l\", col = k, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"approximate IMQ KSD\",side=2,line=2,las=0,outer=F,cex=0.8)\nmtext(text=\"\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('topright', col = 1:length(Nin), lty = 1, legend = nInner, cex = 0.8)\n\n\n\n\n",
+    "created" : 1600908560263.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3737911457",
+    "id" : "848AAA3",
+    "lastKnownWriteTime" : 1600908649,
+    "last_content_update" : 1600908649171,
+    "path" : "~/work/approxKSD/ising/sim.R",
+    "project_path" : "sim.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

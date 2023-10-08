@@ -1,0 +1,35 @@
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+ 
+ 
+Job started on comp-sc-0098.acib.production.int.aci.ics.psu.edu at Fri Feb 24 11:11:34 EST 2023
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: parallel
+Error: object 'burnin' not found
+Execution halted
+ 
+Job Ended at Fri Feb 24 11:11:46 EST 2023
+ 

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(27)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"ergmData30.RData\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n#======================================================================\n# Draw multiple samples via DMH\n#======================================================================\nNout = 1010000\nNin = c(1, 3, 5, 10, 30, 50, 70, 100)\nth = matrix(hat, 1, 2)\nJ = length(Nin)\n\n\n# # Set Up Foreach\n# nprocs <- 19     # Note that we need to reserve 1 processor as the parent processor\n# # mp_type = \"MPI\"\n# mp_type = \"PSOCK\"\n# cl <- parallel::makeCluster(nprocs, type=mp_type)\n# doParallel::registerDoParallel(cl)\n# \n# \n# ptm <- proc.time()[3]\n# Liang <- foreach(j=1:J, .packages = c(\"Rcpp\"),\n#                  .noexport = c(\"Choose\", \"countShared\", \"ergmDMH\", \"Gibbs\", \"Gibbs2\", \"ergmGibbs\", \"Summary\")) %dopar% {\n#                    sourceCpp(\"RcppFtns.cpp\")\n#                    ergmDMH(X, COV, th, Nout, Nin[j])[-1,]\n#                             }\n# timeLiang <- proc.time()[3] - ptm\n# \n# save(X, stat, Nout, Nin, Liang, timeLiang, file = \"Liang30.RData\")\n\n\n\n# for(j in 1:J){\n#   ptm <- proc.time()[3]\n#   Liang = ergmDMH(X, COV, th, Nout, Nin[j])[-1,]\n#   timeLiang <- proc.time()[3] - ptm\n#   save(stat, Nout, Nin, Liang, timeLiang, file = paste(\"Liang30In\", Nin[j], \".RData\", sep=\"\"))\n# }\n                   \n\nj = 3                  \nptm <- proc.time()[3]\nLiang = ergmDMH(X, COV, th, Nout, Nin[j])[-1,]\ntimeLiang <- proc.time()[3] - ptm\nsave(stat, Nout, Nin, Liang, timeLiang, file = paste(\"Liang30In\", Nin[j], \".RData\", sep=\"\"))\n\n",
+    "created" : 1604293883212.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4061375544",
+    "id" : "5A5D4CEE",
+    "lastKnownWriteTime" : 1603901367,
+    "last_content_update" : 1603901367,
+    "path" : "/storage/work/b/bxk487/diagnostics/ergm/magnolia/Liang.R",
+    "project_path" : "Liang.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

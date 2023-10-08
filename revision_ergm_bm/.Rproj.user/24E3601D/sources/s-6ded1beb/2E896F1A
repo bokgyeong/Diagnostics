@@ -1,0 +1,24 @@
+{
+    "id": "2E896F1A",
+    "path": "~/work/diagnostics/ergm/magnolia/misc.R",
+    "project_path": "misc.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1626216569280.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "cursorPosition": "35,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1626216607,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1626216607915,
+    "read_only": false,
+    "read_only_alternatives": []
+}

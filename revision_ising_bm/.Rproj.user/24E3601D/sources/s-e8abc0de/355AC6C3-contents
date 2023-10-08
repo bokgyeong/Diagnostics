@@ -1,0 +1,141 @@
+rm(list=ls())
+library(tidyverse)
+library(gridExtra)
+library(batchmeans)
+library(Rcpp)
+library(RcppArmadillo)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+source('RFtns.R')
+
+# =====================================
+# DMH algorithm
+# =====================================
+# m = c(1:5, 50, 100)
+# 
+# burn = 10000
+# 
+# diagLiang = data.frame()
+# for(i in 1:length(m)){
+#   load(paste('simAppxLiang', m[i], '.RData', sep = ''))
+#   
+#   # burn-in and stop ------------
+#   # Liang = Liang[-(1:burn)]
+#   knots = seq(5000, length(Liang), by = 5000)
+#   # niter = knots[which(sapply(knots, function(j) unlist(bm(Liang[1:j]))[2]) < 0.0005)[1]]
+#   niter = 100000
+#   Liang = Liang[1:niter]
+#   
+#   start = which(Liang[1] == th)
+#   end = which(Liang[length(Liang)] == th)
+#   th = th[start:end]
+#   appx = appx[start:end,]
+#   nth = length(th)
+#   
+#   # compute ACD ------------
+#   qn = sapply(1:nth, function(i) sum(th[i]==Liang)/niter)
+#   
+#   Hmat = appx[,2]
+#   Jmat = appx[,3]
+#   sensitivity = as.vector(-t(qn)%*%Hmat)
+#   variability = as.vector(t(qn)%*%Jmat)
+#   acd = ACD(sensitivity, variability)
+#   
+#   # compute AIKS ------------
+#   sourceCpp("RcppFtns.cpp")
+#   score = appx[,1]
+#   c = 1
+#   beta = -1/2
+#   wsq = pIsingAIKS(matrix(th, ncol = 1), matrix(score, ncol = 1), qn, c, beta, nth, 5)
+#   aiks = sqrt(sum(wsq)) # L2 norm
+#   
+#   df = data.frame(m = as.factor(m[i]), ACD = acd, AIKS = aiks)
+#   diagLiang = rbind(diagLiang, df)
+# }
+# save(diagLiang, m, file = 'summaryLiang.RData')
+
+load('summaryLiang.RData')
+acdLiang = ggplot(diagLiang, aes(m, ACD, group = 1)) +
+  geom_point() +
+  geom_line()
+
+aiksLiang = ggplot(diagLiang, aes(m, AIKS, group = 1)) +
+  geom_point() +
+  geom_line()
+
+grid.arrange(acdLiang, aiksLiang, ncol = 2, top = 'DMH') # 600*
+
+
+
+# # =====================================
+# # LikEm algorithm
+# # =====================================
+# d = c(50, 100, 200)
+# L = c(1000, 2000)
+# 
+# # diagLikEm = data.frame()
+# # for(i in d){
+# #   for(j in L){
+# #     load(paste('simAppxLikEmd', i, 'N', j, '.RData', sep = ''))
+# #     
+# #     # burn-in and stop ------------
+# #     knots = seq(5000, length(LikEm), by = 5000)
+# #     # niter = knots[which(sapply(knots, function(j) unlist(bm(LikEm[1:j]))[2]) < 0.0005)[1]]
+# #     niter = 100000
+# #     LikEm = LikEm[1:niter]
+# # 
+# #     start = which(LikEm[1] == th)
+# #     end = which(LikEm[length(LikEm)] == th)
+# #     th = th[start:end]
+# #     appx = appx[start:end,]
+# #     nth = length(th)
+# #     
+# #     # compute ACD ------------
+# #     qn = sapply(1:nth, function(i) sum(th[i]==LikEm)/niter)
+# #     
+# #     Hmat = appx[,2]
+# #     Jmat = appx[,3]
+# #     sensitivity = as.vector(-t(qn)%*%Hmat)
+# #     variability = as.vector(t(qn)%*%Jmat)
+# #     acd = ACD(sensitivity, variability)
+# #     
+# #     # compute AIKS ------------
+# #     sourceCpp("RcppFtns.cpp")
+# #     score = appx[,1]
+# #     c = 1
+# #     beta = -1/2
+# #     wsq = pIsingAIKS(matrix(th, ncol = 1), matrix(score, ncol = 1), qn, c, beta, nth, 16)
+# #     aiks = sqrt(sum(wsq)) # L2 norm
+# #     
+# #     df = data.frame(d = as.factor(i), L = as.factor(j), ACD = acd, AIKS = aiks)
+# #     diagLikEm = rbind(diagLikEm, df)
+# #   }
+# # }
+# # save(diagLikEm, d, L, file = 'summaryLikEm.RData')
+# 
+# load('summaryLikEm.RData')
+# acdLikEm = ggplot(diagLikEm, aes(d, ACD, group = L)) +
+#   geom_point(aes(shape = L, color = L)) +
+#   geom_line(aes(color = L)) +
+#   theme(legend.position = 'right')
+# 
+# aiksLikEm = ggplot(diagLikEm, aes(d, AIKS, group = L)) +
+#   geom_point(aes(shape = L, color = L)) +
+#   geom_line(aes(color = L)) +
+#   theme(legend.position = 'none')
+# 
+# legLikEm = get_legend(acdLikEm)
+# acdLikEm = acdLikEm + theme(legend.position = 'none')
+# grid.arrange(acdLikEm, aiksLikEm, legLikEm, ncol = 3, widths = c(1, 1, 0.3), top = 'DMH') # 600*280
+
+
+
+
+
+
+

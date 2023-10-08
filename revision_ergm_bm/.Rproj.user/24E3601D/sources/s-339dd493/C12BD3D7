@@ -1,0 +1,24 @@
+{
+    "id": "C12BD3D7",
+    "path": "~/work/diagnostics/ergm/magnolia/AEX.R",
+    "project_path": "AEX.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625023743380.0,
+    "source_on_save": false,
+    "relative_order": 8,
+    "properties": {
+        "cursorPosition": "101,27",
+        "scrollLine": "75"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1625023770,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1625023770239,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"zLiang30In1_thin.RData\")\n\n\n\n#======================================================================\n# Approximate IKSD\n#======================================================================\nz2 = zLiangIn1[,3:4]; rm(zLiangIn1)\n\n\nc = 1\nbeta = -1/2\nregint = seq(1000, nrow(Liang), by = 100)\nidx = sapply(regint, function(i) which(Liang[i,1] == th[,1]))\n\n\n# set up for parallelization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n\n### compute approximate knots\nptm = proc.time()[3]\naiksdLiang = rep(0, length(idx))\nfor(sp in 1:length(idx)){\n  k = idx[sp]\n  n = regint[sp]\n  qn = sapply(1:k, function(i) sum(th[i,1]==Liang[1:n,1])/n)\n  \n  wsq = foreach(i = 1:k, .combine = rbind) %dopar% {\n    knot = matrix(0, k, ncol(z2))\n    for(ip in i:k){\n      bthi = stat - z2[i,]\n      bthip = stat - z2[ip,]\n      temp = c^2 + sum((th[i,] - th[ip,])^2)\n      temp2 = th[i,]-th[ip,]\n      k0 = temp^beta\n      k0thi = 2*beta*(temp^(beta-1))*temp2\n      k0thip = -k0thi\n      k0thithip = -2*beta*(temp^(beta-2))*(2*(temp2^2)*(beta-1)+temp)\n      \n      knot[ip,] = bthi*bthip*k0 + bthi*k0thip + bthip*k0thi + k0thithip\n    }\n    if(i < k-1){\n      wsqi = (qn[i]^2)*knot[i,] + qn[i]*colSums(knot[(i+1):k,]*qn[(i+1):k])*2\n    } else if(i == k-1){\n      wsqi = (qn[i]^2)*knot[i,] + qn[i]*sum(knot[(i+1):k,]*qn[(i+1):k])*2 \n    } else {\n      wsqi = (qn[i]^2)*knot[i,] \n    }\n    wsqi\n  }\n  \n  aiksdLiang[sp] = sqrt(sum(wsq))\n}\ntimeaiksdLiang = proc.time()[3] - ptm\nsave(regint, aiksdLiang, timeaiksdLiang, file = \"aiksdLiang30In1_thin_mod.RData\")\n\n\n\n\n",
+    "created" : 1604336263905.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1181385228",
+    "id" : "3A396A3B",
+    "lastKnownWriteTime" : 1604336307,
+    "last_content_update" : 1604336307907,
+    "path" : "~/work/diagnostics/ergm/magnolia/aiksdLiangIn1_mod.R",
+    "project_path" : "aiksdLiangIn1_mod.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

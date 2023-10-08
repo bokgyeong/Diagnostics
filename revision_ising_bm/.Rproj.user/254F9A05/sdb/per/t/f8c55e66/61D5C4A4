@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\n\n#==============================================================================\n# Liang\n#==============================================================================\n# Second Bartlett \n#------------------------------------------------------------------------------\nload(\"bartLiang020.RData\")\n\nNin = c(1, 3, 5, 10, 30, 50, 70, 100)\nylimit = c(0, max(unlist(bart)))\nnInner = sapply(1:length(Nin), function(k) paste(\"m = \", Nin[k], sep = \"\"))\n\npar(mfrow=c(1, 1), mar = c(3.5, 3, 1, 1))\nplot(regint, bart[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(nInner)){\n  lines(regint, bart[[k]], type = \"l\", col = k, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"SB\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('right', col = 1:length(nInner), lty = 1, legend = nInner, cex = 0.8)\n\n\n\n#------------------------------------------------------------------------------\n# Approximate IMQ KSD \n#------------------------------------------------------------------------------\nload(\"ksdLiang020In1.RData\")\nload(\"ksdLiang020In3.RData\")\nload(\"ksdLiang020In5.RData\")\nload(\"ksdLiang020In10.RData\")\nload(\"ksdLiang020In30.RData\")\nload(\"ksdLiang020In50.RData\")\nload(\"ksdLiang020In70.RData\")\nload(\"ksdLiang020In100.RData\")\n\naksd = list(aKSDIn1, aKSDIn3, aKSDIn5, aKSDIn10, aKSDIn30, aKSDIn50, aKSDIn70, aKSDIn100)\n\nylimit = c(0, max(unlist(aksd)))\nplot(regint, aksd[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(aksd)){\n  lines(regint, aksd[[k]], type = \"l\", col = k, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Approximate IMQ KSD\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('topright', col = 1:length(aksd), lty = 1, legend = nInner, cex = 0.8)\n\n\n\n#------------------------------------------------------------------------------\n# comparison SB with aKSD\n#------------------------------------------------------------------------------\npar(mfrow=c(1, 2), mar = c(3.5, 3, 1, 1))\n\nylimit = c(0, max(unlist(bart)))\nplot(regint, bart[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(bart)){\n  lines(regint, bart[[k]], type = \"l\", col = k, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"Diagnostic quantity\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('right', col = 1:length(bart), lty = 1, legend = nInner, cex = 0.8)\n\nylimit = c(0, max(unlist(aksd)))\nplot(regint, aksd[[1]], type = \"l\", col = 1, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\nfor(k in 2:length(aksd)){\n  lines(regint, aksd[[k]], type = \"l\", col = k, ylim = ylimit, ylab = \"\", xlab = \"\", main = \"\")\n}\nabline(h = 0, lty = \"dashed\")\nmtext(text=\"Iteration\",side=1,line=2.2,las=1,outer=F,cex=0.8)\nmtext(text=\"approximate IMQ KSD\",side=2,line=2,las=0,outer=F,cex=0.8)\n# mtext(text=\"DMH\",side=3,line=0.3,las=1,outer=F,cex=1)\nlegend('topright', col = 1:length(aksd), lty = 1, legend = nInner, cex = 0.8)\n\n\n",
+    "created" : 1600909836029.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2382088686",
+    "id" : "61D5C4A4",
+    "lastKnownWriteTime" : 1600910692,
+    "last_content_update" : 1600910692318,
+    "path" : "/storage/work/b/bxk487/approxKSD/ising/plotLiang.R",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

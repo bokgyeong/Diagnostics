@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"zLiang30In1_thin.RData\")\nload(\"zLiang30In3_thin.RData\")\n# load(\"zLiang30In5_thin.RData\")\nload(\"zLiang30In5_thin_2.RData\")\nload(\"zLiang30In10_thin.RData\")\nload(\"zLiang30In30_thin.RData\")\nload(\"zLiang30In50_thin.RData\")\nload(\"zLiang30In70_thin.RData\")\nload(\"zLiang30In100_thin.RData\")\nload(\"Liang30.RData\")\n\n\n#======================================================================\n# Diagnostic quantity\n#======================================================================\nz = list(zLiangIn1, zLiangIn3, zLiangIn5, zLiangIn10, zLiangIn30, zLiangIn50, zLiangIn70, zLiangIn100)\nbartLiang = list()\n\n### set up for parallelization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n\nptm = proc.time()[3]\nfor(k in 1:length(z)){\n  LiangInk = Liang[[k]]\n  \n  # burn = 10000\n  # niter = 50000\n  # LiangInk = LiangInk[(burn+1):niter,]\n  # th = unique(LiangInk)\n  # nth = nrow(th)\n  \n  # for thining\n  burn = 10000\n  niter = nrow(LiangInk)\n  LiangInk = LiangInk[seq(burn+50, niter, by = 50),]\n  th = unique(LiangInk)\n  nth = nrow(th)\n  \n  regint = seq(1000, nrow(LiangInk), by = 100)\n  idx = sapply(regint, function(i) which(LiangInk[i,1] == th[,1]))\n  bart = rep(0, length(idx))\n  \n  bart = foreach(j = idx) %dopar% {\n    m = which(idx == j)\n    n = regint[m]\n    qn = sapply(1:j, function(i) sum(th[i,1]==LiangInk[1:n,1])/n)\n    \n    # estimate of the information matrix I(theta)\n    EHhatii = t(qn) %*% ( z[[k]][1:j,1:2] - (z[[k]][1:j,3:4])^2 )\n    EHhatij = t(qn) %*% ( z[[k]][1:j,5] - apply(z[[k]][1:j,3:4], 1, prod) )\n    EHhat = matrix(c(EHhatii[1], rep(EHhatij, 2), EHhatii[2]), ncol = 2)\n    \n    # estimate of the J(theta)\n    Uhat = t(sapply(1:j, function(ell) stat - z[[k]][ell,3:4]))\n    EJhatii = t(qn) %*% (Uhat^2)\n    EJhatij = t(qn) %*% (apply(Uhat, 1, prod))\n    EJhat = matrix(c(EJhatii[1], rep(EJhatij, 2), EJhatii[2]), ncol = 2)\n    \n    sqrt(sum( ( solve(EHhat)%*%EJhat - diag(2) )^2 ))\n  }\n  \n  bartLiang[[k]] = bart\n}\ntimebartLiang = proc.time()[3] - ptm\n\n# save(regint, bartLiang, timebartLiang, file = \"b2Liang30_thin.RData\")\nsave(regint, bartLiang, timebartLiang, file = \"b2Liang30_thin_2.RData\")\n",
+    "created" : 1604326102965.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1333505617",
+    "id" : "5935F712",
+    "lastKnownWriteTime" : 1603901692,
+    "last_content_update" : 1603901692,
+    "path" : "~/work/diagnostics/ergm/magnolia/b2Liang.R",
+    "project_path" : "b2Liang.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

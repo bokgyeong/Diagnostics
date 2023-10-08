@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(fields)\nlibrary(lattice)\nlibrary(coda)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(xtable)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n#========================================================================\n# Call functions\n#========================================================================\nsource(\"http://personal.psu.edu/muh10/MCMCtut/batchmeans.R\")\nsource(\"RFtns.R\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\nset.seed(1)\n#========================================================================\n# Simulate Data\n#========================================================================\n# N <- 10                     # number of lattice size\nN <- 30\nX <- ProppWilson(N,N,0.20)   # assume it is true data (you can change true parameter value)\nz <- optim(0.1,pseudoLik,control=list(fnscale=-1), method = \"BFGS\")\nMPLE <- z$par\n\n# save(X, N, MPLE, file = \"isingData020.RData\")\n# save(X, N, MPLE, file = \"isingData043.RData\")\nsave(X, N, MPLE, file = \"isingData020n30.RData\")\n\n\nset.seed(1)\nX <- ProppWilson(10, 10, 0.20)\nSy = pAuxStatPerf(10, 10, 0.20, 1000, 1)\nts.plot(Sy)\nmean(Sy)\nabline(h=Energy(X), col=\"red\"); Energy(X)\n\n",
+    "created" : 1611177244257.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3332765200",
+    "id" : "3EE3A37E",
+    "lastKnownWriteTime" : 1602120404,
+    "last_content_update" : 1602120404,
+    "path" : "~/work/diagnostics/ising/Ising.R",
+    "project_path" : "Ising.R",
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

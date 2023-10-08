@@ -1,0 +1,65 @@
+rm(list=ls())
+library(coda)
+library(ergm)
+library(Rcpp)
+library(RcppArmadillo)
+library(MASS)
+library(snow)
+library(doParallel)
+library(foreach)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+# set up for parallelization
+nprocs = 19
+# mp_type = "MPI"
+mp_type = "PSOCK"
+cl = parallel::makeCluster(nprocs, type=mp_type)
+doParallel::registerDoParallel(cl)
+
+
+#================================================================
+# Call data and functions
+#================================================================
+# LikEm2
+d = c(400, 1000)
+N = c(2000, 5000, 10000)
+# ABCLik
+# d = c(1000, 2000)
+# N = c(5000, 10000)
+
+tuns = matrix(c(rep(d, each = length(N)), rep(N, length(d))), ncol = 2)
+
+
+k = 6
+tun = tuns[k,]
+load(paste('simAppxLikEm2d', tun[1], 'N', tun[2], '.RData', sep = ''))
+# load(paste('simAppxABCLikd', tun[1], 'N', tun[2], '.RData', sep = ''))
+p = ncol(LikEm)
+score = appx[,1:p]
+
+
+### aiks ---------------------------------------------------
+c = 1
+beta = -1/2
+niter = nrow(LikEm)
+knots = seq(1000, niter, by = 100)
+idx = sapply(knots, function(i) which(LikEm[i,1] == th[,1]))
+
+ptm = proc.time()[3]
+aiksLikEm = foreach(m = 1:length(idx), .combine = 'c', .packages = "Rcpp", .noexport = c("AIKS", "pAIKS")) %dopar% {
+  sourceCpp("RcppFtns.cpp")
+
+  k = idx[m]
+  n = knots[m]
+  qn = sapply(1:k, function(i) sum(th[i,1]==LikEm[1:n,1])/n)
+
+  w = sqrt(apply(pAIKS(th, score, qn, c, beta, k, 1), 2, sum))
+  sqrt(sum(w^2)) # L2 norm
+  # sum(w) # L1 norm
+}
+timeaiksLikEm = proc.time()[3] - ptm
+save(aiksLikEm, timeaiksLikEm, knots, file = paste('simAIKSL2LikEm2d', tun[1], 'N', tun[2], '.RData', sep = ''))
+# save(aiksLikEm, timeaiksLikEm, knots, file = paste('simAIKSL2ABCLikd', tun[1], 'N', tun[2], '.RData', sep = ''))
+

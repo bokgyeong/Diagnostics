@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"simzBesag.RData\")\nload(\"simzBesag_thin.RData\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n#======================================================================\n# Approximate IKSD\n#======================================================================\nz2 = z[,2]; rm(z, timez)\n\n\nc = 1\nbeta = -1/2\nregint = seq(1000, length(Besag), by = 100)\nidx = sapply(regint, function(i) which(Besag[i] == th))\n\n\n### set up for parallelization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n\nptm = proc.time()[3]\naIKSDBesag = foreach(m = 1:length(idx), .combine = 'c', .packages = \"Rcpp\", .noexport = c(\"W2\", \"pW2\")) %dopar% {\n  sourceCpp(\"RcppFtns.cpp\")\n  \n  k = idx[m]\n  n = regint[m]\n  qn = sapply(1:k, function(i) sum(th[i]==Besag[1:n])/n)\n  \n  wsq = pW2(matrix(th, ncol=1), Sx, matrix(z2, ncol=1), qn, c, beta, k, 1)\n  sqrt(sum(wsq))\n}\ntimeaIKSDBesag = proc.time()[3] - ptm\n# save(regint, aIKSDBesag, timeaIKSDBesag, file = \"aiksdBesag020n30Perf.RData\")\nsave(regint, aIKSDBesag, timeaIKSDBesag, file = \"aiksdBesag020n30Perf_thin.RData\")\n\n",
+    "created" : 1604427688158.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "538581792",
+    "id" : "A1FDB6E3",
+    "lastKnownWriteTime" : 1604427942,
+    "last_content_update" : 1604427942472,
+    "path" : "/storage/work/b/bxk487/diagnostics/ising/ksdBesag.R",
+    "project_path" : "ksdBesag.R",
+    "properties" : {
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

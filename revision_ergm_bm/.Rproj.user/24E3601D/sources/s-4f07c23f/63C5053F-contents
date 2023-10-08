@@ -1,0 +1,418 @@
+rm(list=ls())
+library(tidyverse)
+library(egg)
+library(gridExtra)
+library(batchmeans)
+library(Rcpp)
+library(RcppArmadillo)
+library(batchmeans)
+library(grid)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+nprocs = 20
+ylimESS = c(5500, 9000)
+ylimACD = c(0.11, 0.17)
+ylimAIKS = c(0, 2.5)
+# ylimACD = c(0.25, 0.4)
+# ylimAIKS = c(4.5, 104)
+ylimDen1 = c(0, 0.8)
+ylimDen2 = c(0, 1.3)
+xlimDen1 = c(-3.1, 0.5)
+xlimDen2 = c(-0.7, 1.4)
+# =====================================
+# AEX algorithm
+# =====================================
+# d = c(50, 100, 200, 400)
+# # burn = 10000
+# diagAEX = data.frame()
+# for(i in d){
+#   load(paste('simAppxAEX', i, '.RData', sep = ''))
+# 
+#   # burn-in and stop ------------
+#   # AEX = AEX[-(1:burn)]
+#   # knots = seq(5000, length(AEX), by = 5000)
+#   # niter = knots[which(sapply(knots, function(j) unlist(bm(AEX[1:j]))[2]) < 0.0005)[1]]
+#   # niter = 50000
+#   # AEX = AEX[1:niter,]
+#   #
+#   # start = which(AEX[,1] == th[,1])
+#   # end = which(AEX[length(AEX)] == th)
+#   # th = th[start:end,]
+#   # appx = appx[start:end,]
+#   # nth = length(th)
+# 
+#   niter = nrow(AEX)
+#   qn = sapply(1:nth, function(i) sum(th[i,2]==AEX[,2])/niter)
+# 
+#   # compute ACD ------------
+#   source('RFtns.R')
+#   p = 2
+#   Hmat = appx[,(p+1):(p+p*(p+1)/2)]
+#   Jmat = appx[,(p+p*(p+1)/2+1):(p+p*(p+1))]
+#   
+#   ptm = proc.time()[3]
+#   sensitivity = as.vector(-t(qn)%*%Hmat)
+#   variability = as.vector(t(qn)%*%Jmat)
+#   acd = ACD(sensitivity, variability)
+#   timeACD = proc.time()[3] - ptm
+# 
+#   # compute AIKS ------------
+#   sourceCpp("RcppFtns.cpp")
+#   score = appx[,1:p]
+#   c = 1
+#   beta = -1/2
+#   
+#   ptm = proc.time()[3]
+#   w = sqrt(apply(pAIKS(th, score, qn, c, beta, nth, nprocs), 2, sum))
+#   aiks = sqrt(sum(w^2)) # L2 norm
+#   timeAIKS = proc.time()[3] - ptm
+# 
+#   df = data.frame(d = as.factor(i), ACD = acd, AIKS = aiks, ESS = min(apply(AEX, 2, ess)), timeACD = timeACD, timeAIKS = timeAIKS)
+#   diagAEX = rbind(diagAEX, df)
+# }
+# save(diagAEX, d, file = 'summaryAEX.RData')
+
+
+load('summaryAEX.RData')
+
+essAEX = ggplot(diagAEX, aes(d, ESS, group = 1)) +
+  # labs(title = 'AEX', y = 'minimum ESS') +
+  labs(y = 'minimum ESS') +
+  coord_cartesian(ylim = ylimESS) +
+  geom_point() +
+  geom_line()
+
+acdAEX = ggplot(diagAEX, aes(d, ACD, group = 1)) +
+  coord_cartesian(ylim = ylimACD) +
+  geom_point() +
+  geom_line()
+
+aiksAEX = ggplot(diagAEX, aes(d, AIKS, group = 1)) +
+  coord_cartesian(ylim = ylimAIKS) +
+  geom_point() +
+  geom_line()
+
+ggarrange(essAEX, acdAEX, aiksAEX, ncol = 3)
+
+# =====================================
+# ALR algorithm
+# =====================================
+# d = c(50, 100, 200, 400, 1000)
+# m = c(1)
+# # burn = 10000
+# diagAtchade = data.frame()
+# for(i in d){
+#   for(j in m){
+#     # load(paste('simAppxAtchaded', i, 'm', j, '.RData', sep = ''))
+#     load(paste('simAppxAtchaded', i, 'm', j, 'long.RData', sep = ''))
+# 
+#     # burn-in and stop ------------
+#     # Atchade = Atchade[-(1:burn)]
+#     # knots = seq(5000, length(Atchade), by = 5000)
+#     # niter = knots[which(sapply(knots, function(j) unlist(bm(Atchade[1:j]))[2]) < 0.0005)[1]]
+#     # niter = 50000
+#     # Atchade = Atchade[1:niter,]
+#     #
+#     # start = which(Atchade[,1] == th[,1])
+#     # end = which(Atchade[length(Atchade)] == th)
+#     # th = th[start:end,]
+#     # appx = appx[start:end,]
+#     # nth = length(th)
+# 
+#     niter = nrow(Atchade)
+# 
+#     # compute ACD ------------
+#     source('RFtns.R')
+#     p = 2
+#     Hmat = appx[,(p+1):(p+p*(p+1)/2)]
+#     Jmat = appx[,(p+p*(p+1)/2+1):(p+p*(p+1))]
+# 
+#     ptm = proc.time()[3]
+#     qn = sapply(1:nth, function(i) sum(th[i,2]==Atchade[,2])/niter)
+#     sensitivity = as.vector(-t(qn)%*%Hmat)
+#     variability = as.vector(t(qn)%*%Jmat)
+#     acd = ACD(sensitivity, variability)
+#     timeACD = proc.time()[3] - ptm
+# 
+#     # compute AIKS ------------
+#     sourceCpp("RcppFtns.cpp")
+#     score = appx[,1:p]
+#     c = 1
+#     beta = -1/2
+# 
+#     ptm = proc.time()[3]
+#     qn = sapply(1:nth, function(i) sum(th[i,2]==Atchade[,2])/niter)
+#     w = sqrt(apply(pAIKS(th, score, qn, c, beta, nth, nprocs), 2, sum))
+#     aiks = sqrt(sum(w^2)) # L2 norm
+#     timeAIKS = proc.time()[3] - ptm
+# 
+#     df = data.frame(d = as.factor(i), ACD = acd, AIKS = aiks, ESS = min(apply(Atchade, 2, ess)), timeACD = timeACD, timeAIKS = timeAIKS)
+#     diagAtchade = rbind(diagAtchade, df)
+#   }
+# }
+# save(diagAtchade, d, file = 'summaryAtchade.RData')
+
+
+load('summaryAtchade.RData')
+# diagAtchade = diagAtchade %>% filter(d %in% c(100, 200, 400))
+# diagAtchade = diagAtchade %>% filter(d %in% c(50, 100, 200, 400))
+essAtchade = ggplot(diagAtchade, aes(d, ESS, group = 1)) +
+  # labs(title = 'ALR', y = 'minimum ESS') +
+  coord_cartesian(ylim = ylimESS) +
+  labs(y = 'minimum ESS') +
+  geom_point() +
+  geom_line()
+
+acdAtchade = ggplot(diagAtchade, aes(d, ACD, group = 1)) +
+  coord_cartesian(ylim = ylimACD) +
+  geom_point() +
+  geom_line()
+
+aiksAtchade = ggplot(diagAtchade, aes(d, AIKS, group = 1)) +
+  coord_cartesian(ylim = ylimAIKS) +
+  geom_point() +
+  geom_line()
+
+ggarrange(essAtchade, acdAtchade, aiksAtchade, ncol = 3)
+
+
+sampleAtchade = data.frame()
+for(i in unique(diagAtchade$d)){
+  load(paste('simAtchaded', i, 'm', 1, '.RData', sep = ''))
+  df = data.frame(d = as.factor(i), parameter = Atchade)
+  sampleAtchade = rbind(sampleAtchade, df)
+}
+
+th1Atchade = ggplot(sampleAtchade, aes(x = parameter.1)) +
+  geom_density(aes(color = d, linetype = d)) +
+  coord_cartesian(xlim = xlimDen1, ylim = ylimDen1) +
+  labs(x = expression(theta[1]), y = 'Density') +
+  theme(legend.position = 'bottom', legend.key.size = unit(0.5, 'cm')) +
+  # theme(legend.position = 'right', legend.key.size = unit(0.5, 'cm')) +
+  guides(color = guide_legend(nrow=1, byrow=TRUE))
+  # guides(color = guide_legend(ncol=1, byrow=TRUE))
+
+th2Atchade = ggplot(sampleAtchade, aes(x = parameter.2)) +
+  geom_density(aes(color = d, linetype = d)) +
+  coord_cartesian(xlim = xlimDen2, ylim = ylimDen2) +
+  labs(x = expression(theta[2]), y = 'Density') +
+  theme(legend.position = 'none')
+
+# =====================================
+# DMH algorithm
+# =====================================
+# m = c(1:5, 10, 50, 100)
+# # burn = 10000
+# diagLiang = data.frame()
+# for(i in m){
+#   load(paste('simAppxLiang', i, '.RData', sep = ''))
+# 
+#   # burn-in and stop ------------
+#   # Liang = Liang[-(1:burn)]
+#   # knots = seq(5000, length(Liang), by = 5000)
+#   # niter = knots[which(sapply(knots, function(j) unlist(bm(Liang[1:j]))[2]) < 0.0005)[1]]
+#   # niter = 50000
+#   # Liang = Liang[1:niter,]
+#   #
+#   # start = which(Liang[,1] == th[,1])
+#   # end = which(Liang[length(Liang)] == th)
+#   # th = th[start:end,]
+#   # appx = appx[start:end,]
+#   # nth = length(th)
+# 
+#   niter = nrow(Liang)
+# 
+#   # compute ACD -----------
+#   source('RFtns.R')
+#   p = 2
+#   Hmat = appx[,(p+1):(p+p*(p+1)/2)]
+#   Jmat = appx[,(p+p*(p+1)/2+1):(p+p*(p+1))]
+# 
+#   ptm = proc.time()[3]
+#   qn = sapply(1:nth, function(i) sum(th[i,2]==Liang[,2])/niter)
+#   sensitivity = as.vector(-t(qn)%*%Hmat)
+#   variability = as.vector(t(qn)%*%Jmat)
+#   acd = ACD(sensitivity, variability)
+#   timeACD = proc.time()[3] - ptm
+# 
+#   # compute AIKS ------------
+#   sourceCpp("RcppFtns.cpp")
+#   score = appx[,1:p]
+#   c = 1
+#   beta = -1/2
+# 
+#   ptm = proc.time()[3]
+#   qn = sapply(1:nth, function(i) sum(th[i,2]==Liang[,2])/niter)
+#   w = sqrt(apply(pAIKS(th, score, qn, c, beta, nth, nprocs), 2, sum))
+#   aiks = sqrt(sum(w^2)) # L2 norm
+#   timeAIKS = proc.time()[3] - ptm
+# 
+#   df = data.frame(m = as.factor(i), ACD = acd, AIKS = aiks, ESS = min(apply(Liang, 2, ess)), timeACD = timeACD, timeAIKS = timeAIKS)
+#   diagLiang = rbind(diagLiang, df)
+# }
+# save(diagLiang, m, file = 'summaryLiang.RData')
+
+
+load('summaryLiang.RData')
+diagLiang = diagLiang %>% filter(m %in% c(1:5, 100))
+# essLiang = ggplot(diagLiang, aes(m, ESS, group = 1)) +
+#   # labs(title = 'DMH', y = 'minimum ESS') +
+#   labs(y = 'minimum ESS') +
+#   coord_cartesian(ylim = ylimESS) +
+#   geom_point() +
+#   geom_line()
+# 
+# acdLiang = ggplot(diagLiang, aes(m, ACD, group = 1)) +
+#   coord_cartesian(ylim = ylimACD) +
+#   geom_point() +
+#   geom_line()
+# 
+# aiksLiang = ggplot(diagLiang, aes(m, AIKS, group = 1)) +
+#   coord_cartesian(ylim = ylimAIKS) +
+#   geom_point() +
+#   geom_line()
+# 
+# # ggarrange(essLiang, acdLiang, aiksLiang, ncol = 3)
+# 
+# 
+# sampleLiang = data.frame()
+# load('simLiang.RData')
+# for(i in unique(diagLiang$m)){
+#   df = data.frame(m = as.factor(i), parameter = Liang[[which(Nin == i)]])
+#   sampleLiang = rbind(sampleLiang, df)
+# }
+# 
+# th1Liang = ggplot(sampleLiang, aes(x = parameter.1)) +
+#   geom_density(aes(color = m, linetype = m)) +
+#   coord_cartesian(xlim = xlimDen1, ylim = ylimDen1) +
+#   labs(x = expression(theta[1]), y = 'Density') +
+#   theme(legend.position = 'bottom', legend.key.size = unit(0.5, 'cm')) +
+#   # theme(legend.position = 'right', legend.key.size = unit(0.5, 'cm')) +
+#   # guides(color = guide_legend(nrow=2, byrow=TRUE))
+#   guides(color = guide_legend(nrow=1, byrow=TRUE))
+# 
+# th2Liang = ggplot(sampleLiang, aes(x = parameter.2)) +
+#   geom_density(aes(color = m, linetype = m)) +
+#   coord_cartesian(xlim = xlimDen2, ylim = ylimDen2) +
+#   labs(x = expression(theta[2]), y = 'Density') +
+#   theme(legend.position = 'none')
+
+# =====================================
+# LikEm algorithm
+# =====================================
+# d = c(400, 1000, 2000)
+# L = c(2000, 5000)
+# 
+# diagLikEm = data.frame()
+# for(i in d){
+#   for(j in L){
+#     load(paste('simAppxLikEm2d', i, 'N', j, '.RData', sep = ''))
+# 
+#     # burn-in and stop ------------
+#     # LikEm = LikEm[-(1:burn)]
+#     # knots = seq(5000, length(LikEm), by = 5000)
+#     # niter = knots[which(sapply(knots, function(j) unlist(bm(LikEm[1:j]))[2]) < 0.0005)[1]]
+#     # niter = 50000
+#     # LikEm = LikEm[1:niter,]
+#     #
+#     # start = which(LikEm[,1] == th[,1])
+#     # end = which(LikEm[length(LikEm)] == th)
+#     # th = th[start:end,]
+#     # appx = appx[start:end,]
+#     # nth = length(th)
+# 
+#     niter = nrow(LikEm)
+# 
+#     # compute ACD ------------
+#     source('RFtns.R')
+#     qn = sapply(1:nth, function(i) sum(th[i,2]==LikEm[,2])/niter)
+# 
+#     p = 2
+#     Hmat = appx[,(p+1):(p+p*(p+1)/2)]
+#     Jmat = appx[,(p+p*(p+1)/2+1):(p+p*(p+1))]
+#     sensitivity = as.vector(-t(qn)%*%Hmat)
+#     variability = as.vector(t(qn)%*%Jmat)
+#     acd = ACD(sensitivity, variability)
+# 
+#     # compute AIKS ------------
+#     sourceCpp("RcppFtns.cpp")
+#     score = appx[,1:p]
+#     c = 1
+#     beta = -1/2
+#     w = sqrt(apply(pAIKS(th, score, qn, c, beta, nth, nprocs), 2, sum))
+#     aiks = sqrt(sum(w^2)) # L2 norm
+# 
+#     df = data.frame(d = as.factor(i), L = as.factor(j), ACD = acd, AIKS = aiks, ESS = min(apply(LikEm, 2, ess)))
+#     diagLikEm = rbind(diagLikEm, df)
+#   }
+# }
+# save(diagLikEm, d, L, file = 'summaryLikEm.RData')
+
+
+# load('summaryLikEm.RData')
+# # diagLikEm = diagLikEm %>% filter(d != 100)
+# essLikEm = ggplot(diagLikEm, aes(d, ESS, group = L)) +
+#   # labs(title = 'LikEm') +
+#   geom_point(aes(shape = L)) +
+#   geom_line(aes(linetype = L)) +
+#   theme(legend.position = c(0.8, 0.2),
+#         legend.key.size = unit(0.5, 'cm'))
+#   # theme(legend.position = 'none')
+# 
+# acdLikEm = ggplot(diagLikEm, aes(d, ACD, group = L)) +
+#   # coord_cartesian(ylim = ylimACD) +
+#   geom_point(aes(shape = L)) +
+#   geom_line(aes(linetype = L)) +
+#   # theme(legend.position = 'none')
+#   theme(legend.position = 'none')
+# 
+# aiksLikEm = ggplot(diagLikEm, aes(d, AIKS, group = L)) +
+#   # coord_cartesian(ylim = ylimAIKS) +
+#   geom_point(aes(shape = L)) +
+#   geom_line(aes(linetype = L)) +
+#   theme(legend.position = 'none')
+# 
+# ggarrange(essLikEm, acdLikEm, aiksLikEm, ncol = 3)
+
+
+# ================================================================
+# plot
+# ================================================================
+# legAtchade = get_legend(th1Atchade)
+# legLiang = get_legend(th1Liang)
+# th1Atchade = th1Atchade + theme(legend.position = 'none')
+# th1Liang = th1Liang + theme(legend.position = 'none')
+# 
+# # plotAtchade = ggarrange(essAtchade, acdAtchade, aiksAtchade, ncol = 3, top = grid::textGrob('(a) ALR: Diagnostics', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# # plotLiang = ggarrange(essLiang, acdLiang, aiksLiang, ncol = 3, top = grid::textGrob('(b) DMH: Diagnostics', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# # plotAtchadeden1 = ggarrange(th1Atchade, top = grid::textGrob('(c) ALR: Estimated Densities', gp = gpar(fontsize = 13), x = 0.1, hjust = 0))
+# # plotLiangden1 = ggarrange(th1Liang, top = grid::textGrob('(d) DMH: Estimated Densities', gp = gpar(fontsize = 13), x = 0.1, hjust = 0))
+# # plotDen1 = grid.arrange(plotAtchadeden1, plotLiangden1, ncol = 2)
+# # plotDen2 = ggarrange(th2Atchade, th2Liang, ncol = 2)
+# # plotLeg = grid.arrange(legAtchade, legLiang, ncol = 2)
+# # grid.arrange(plotAtchade, plotLiang, plotDen1, plotDen2, plotLeg, heights = c(2, 2, 3, 3, 0.5)) #600*1064
+# 
+# # (760/sum(c(2, 2, 3, 0.5))) * sum(c(2, 2, 3, 3, 0.5))
+# 
+# plotAtchade = ggarrange(essAtchade, acdAtchade, aiksAtchade, ncol = 3, top = grid::textGrob('(a) ALR: Diagnostics', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# plotLiang = ggarrange(essLiang, acdLiang, aiksLiang, ncol = 3, top = grid::textGrob('(a) DMH: Diagnostics', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# plotAtchadeDen = ggarrange(th1Atchade, th2Atchade, ncol = 2, top = grid::textGrob('(b) ALR: Estimated Densities', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# plotLiangDen = ggarrange(th1Liang, th2Liang, ncol = 2, top = grid::textGrob('(b) DMH: Estimated Densities', gp = gpar(fontsize = 13), x = 0.05, hjust = 0))
+# 
+# grid.arrange(plotAtchade, plotAtchadeDen, legAtchade, heights = c(2, 3, 0.4)) #600*550
+# grid.arrange(plotLiang, plotLiangDen, legLiang, heights = c(2, 3, 0.4)) #600*550
+# 
+# # (760/sum(c(2, 2, 3, 0.5))) * sum(c(2, 3, 0.4))
+
+
+round(mean(c(diagAtchade$timeACD, diagLiang$timeACD)), 1)
+round(mean(c(diagAtchade$timeAIKS, diagLiang$timeAIKS)), 1)
+
+diagLiang %>% filter(ESS == max(ESS)) %>% select(m, ESS)
+diagLiang %>% filter(ACD == min(ACD)) %>% select(m, ACD)
+diagLiang %>% filter(AIKS == min(AIKS)) %>% select(m, AIKS)

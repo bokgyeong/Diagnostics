@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : " \n \nJob started on comp-sc-0368.acib.production.int.aci.ics.psu.edu at Mon Oct 19 23:23:08 EDT 2020\nLoading required package: network\nnetwork: Classes for Relational Data\nVersion 1.16.0 created on 2019-11-30.\ncopyright (c) 2005, Carter T. Butts, University of California-Irvine\n                    Mark S. Handcock, University of California -- Los Angeles\n                    David R. Hunter, Penn State University\n                    Martina Morris, University of Washington\n                    Skye Bender-deMoll, University of Washington\n For citation information, type citation(\"network\").\n Type help(\"network-package\") to get started.\n\n\nergm: version 3.10.4, created on 2019-06-10\nCopyright (c) 2019, Mark S. Handcock, University of California -- Los Angeles\n                    David R. Hunter, Penn State University\n                    Carter T. Butts, University of California -- Irvine\n                    Steven M. Goodreau, University of Washington\n                    Pavel N. Krivitsky, University of Wollongong\n                    Martina Morris, University of Washington\n                    with contributions from\n                    Li Wang\n                    Kirk Li, University of Washington\n                    Skye Bender-deMoll, University of Washington\n                    Chad Klumb\nBased on \"statnet\" project software (statnet.org).\nFor license and citation information see statnet.org/attribution\nor type citation(\"ergm\").\n\nNOTE: Versions before 3.6.1 had a bug in the implementation of the bd()\nconstriant which distorted the sampled distribution somewhat. In\naddition, Sampson's Monks datasets had mislabeled vertices. See the\nNEWS and the documentation for more details.\n\nNOTE: Some common term arguments pertaining to vertex attribute and\nlevel selection have changed in 3.10.0. See terms help for more\ndetails. Use 'options(ergm.term=list(version=\"3.9.4\"))' to use old\nbehavior.\n\nLoading required package: foreach\nLoading required package: iterators\nLoading required package: parallel\n\nAttaching package: 'parallel'\n\nThe following objects are masked from 'package:snow':\n\n    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,\n    clusterExport, clusterMap, clusterSplit, makeCluster, parApply,\n    parCapply, parLapply, parRapply, parSapply, splitIndices,\n    stopCluster\n\nError in { : task 1 failed - \"object 'kRthip' not found\"\nCalls: %dopar% -> <Anonymous>\nExecution halted\n \nJob Ended at Mon Oct 19 23:23:22 EDT 2020\n \n",
+    "created" : 1603165775973.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1367330819",
+    "id" : "ED5F726A",
+    "lastKnownWriteTime" : 1603164202,
+    "last_content_update" : 1603164202,
+    "path" : "~/work/approxKSD/ising/aci_ksdLiangIn100_dep.pbs.o23150997",
+    "project_path" : "aci_ksdLiangIn100_dep.pbs.o23150997",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

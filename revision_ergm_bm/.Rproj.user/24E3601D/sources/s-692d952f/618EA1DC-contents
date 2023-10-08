@@ -1,0 +1,79 @@
+rm(list=ls())
+library(coda)
+library(ergm)
+library(Rcpp)
+library(RcppArmadillo)
+library(MASS)
+library(snow)
+library(doParallel)
+library(foreach)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+### set up for paralellization
+nprocs = 19
+# mp_type = "MPI"
+mp_type = "PSOCK"
+cl = parallel::makeCluster(nprocs, type=mp_type)
+doParallel::registerDoParallel(cl)
+
+
+#========================================================================
+# call data and functions
+#========================================================================
+load("simLikEm2.RData")
+# load('simABCLik.RData')
+source("RFtns.R")
+sourceCpp("RcppFtns.cpp")
+
+
+#========================================================================
+# approximate score and hessian
+#========================================================================
+k = 2
+
+tun = tuns[k,]
+LikEm = LikEm[[k]]
+burn = 0
+niter = 100000
+LikEm = LikEm[(burn+1):niter,]
+th = unique(LikEm)
+nth = nrow(th)
+
+
+### simulation by Gibbs sampler
+N = 100000
+burn = 10000
+m = 2
+
+
+cpoint = c(seq(1, nth, by = 10000), nth+1)
+# appx = c(); timeappx = 0; resume = 1
+load(paste('simAppxLikEm2d', tun[1], 'N', tun[2], '.RData', sep = ''))
+# load(paste('simAppxABCLikd', tun[1], 'N', tun[2], '.RData', sep = ''))
+resume = which(cpoint == nrow(appx)+1)
+
+for(c in resume:(length(cpoint)-1)){
+  ptm = proc.time()[3]
+  res = foreach(i = cpoint[c]:(cpoint[c+1]-1), .combine = rbind, .packages = "Rcpp", .noexport = c("Choose", "countShared", "Gibbs3", 'pGibbs3', "Summary")) %dopar% {
+    source("RFtns.R")
+    sourceCpp("RcppFtns.cpp")
+    
+    Sy = pGibbs3(X, th[i,], N+burn, m, 1)[-(1:burn),,]
+    
+    score = approxScore2(stat, Sy)
+    HJmat = approxHJmat2(stat, Sy)
+    c(score, HJmat)
+  }
+  etm = proc.time()[3] - ptm
+  appx = rbind(appx, res)
+  timeappx = timeappx + etm
+  
+  save(LikEm, th, nth, stat, appx, timeappx, tun, file = paste('simAppxLikEm2d', tun[1], 'N', tun[2], '.RData', sep = ''))
+  # save(LikEm, th, nth, stat, appx, timeappx, tun, file = paste('simAppxABCLikd', tun[1], 'N', tun[2], '.RData', sep = ''))
+}
+
+
+
+

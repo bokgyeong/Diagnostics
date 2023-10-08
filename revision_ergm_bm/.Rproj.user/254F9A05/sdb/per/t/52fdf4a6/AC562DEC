@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"Liang30.RData\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\n#======================================================================\n# Compute the approximate score statistics\n#======================================================================\n# Liang = Liang[[which(Nin==1)]]\n# burn = 10000\n# niter = 50000\n# Liang = Liang[(burn+1):niter,]\n# th = unique(Liang)\n# nth = nrow(th)\n\n\n### for thining\nLiang = Liang[[which(Nin==1)]]\nburn = 10000\nniter = nrow(Liang)\nLiang = Liang[seq(burn+50, niter, by = 50),]\nth = unique(Liang)\nnth = nrow(th)\n\n\nN = 1000 # the number of y's to approximate score statistic\nn = nrow(Liang)\n\n\n### Simulate datasets and compute their summary statistics\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n### Simulate datasets and compute their summary statistics\nptm = proc.time()[3]\nzLiangIn1 = foreach(i = 1:nth, .combine = rbind, .packages = \"Rcpp\", .noexport = c(\"Choose\", \"countShared\", \"Gibbs\", \"pResponseErgm\", \"Summary\")) %dopar% {\n  sourceCpp(\"RcppFtns.cpp\")\n  Ystat = pResponseErgm(X, 5, th[i,], N, 1) # 5 cycles of gibbs\n  z1 = colMeans(Ystat^2) \n  z2 = colMeans(Ystat)\n  z3 = mean(apply(Ystat, 1, prod))\n  c(z1, z2, z3)\n}\ntimezLiangIn1 = proc.time()[3] - ptm\n\nsave(Liang, th, nth, stat, zLiangIn1, timezLiangIn1, file = \"zLiang30In1_thin.RData\")\n\n\n\n",
+    "created" : 1610415038194.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2485227881",
+    "id" : "AC562DEC",
+    "lastKnownWriteTime" : 1604335931,
+    "last_content_update" : 1604335931,
+    "path" : "~/work/diagnostics/ergm/magnolia/zLiangIn1.R",
+    "project_path" : "zLiangIn1.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

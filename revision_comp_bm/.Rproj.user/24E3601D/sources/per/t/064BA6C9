@@ -1,0 +1,26 @@
+{
+    "id": "064BA6C9",
+    "path": "~/work/diagnostics/revision_comp_bm/aci_open.pbs",
+    "project_path": "aci_open.pbs",
+    "type": "text",
+    "hash": "3827350930",
+    "contents": "",
+    "dirty": false,
+    "created": 1677033489375.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "13,17",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1677704701,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1677704701165,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"simzLikEmd200N500.RData\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\n#======================================================================\n# Approximate IKSD\n#======================================================================\nz2 = zLikEm[,3:4]; rm(zLikEm)\n\n\nc = 1\nbeta = -1/2\nregint = seq(1000, nrow(LikEm), by = 1000)\nidx = sapply(regint, function(i) which(LikEm[i,1] == th[,1]))\n\n\n### set up for parallelization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n### compute AIKSD\ncpoint = c(seq(1, length(idx), by = 100), length(idx)+1)\n# cpoint = c(seq(1, length(idx), by = 10), length(idx)+1)\naiksdLikEm = c(); resume = 1\n# resume = which(cpoint == length(aiksdLikEm)+1)\n\nfor(c in resume:(length(cpoint)-1)){\n  \n  res = foreach(m = cpoint[c]:(cpoint[c+1]-1), .combine = 'c', .packages = \"Rcpp\", .noexport = c(\"W2\", \"pW2\")) %dopar% {\n    sourceCpp(\"RcppFtns.cpp\")\n    \n    k = idx[m]\n    n = regint[m]\n    qn = sapply(1:k, function(i) sum(th[i,1]==LikEm[1:n,1])/n)\n    \n    wsq = pW2(th, stat, z2, qn, c, beta, k, 1)\n    sqrt(sum(wsq))\n  }\n  \n  aiksdLikEm = c(aiksdLikEm, res)\n  save(regint, aiksdLikEm, file = \"simAIKSDLikEmd200N500.RData\")\n}\n\n\n\n\n",
+    "created" : 1608320833571.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2377012213",
+    "id" : "DBB89E4E",
+    "lastKnownWriteTime" : 1608320846,
+    "last_content_update" : 1608320846771,
+    "path" : "~/work/diagnostics/ergm/magnolia/aiksdLikEmd200N500.R",
+    "project_path" : "aiksdLikEmd200N500.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

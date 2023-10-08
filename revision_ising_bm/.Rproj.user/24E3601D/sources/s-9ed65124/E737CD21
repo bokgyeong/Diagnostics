@@ -1,0 +1,24 @@
+{
+    "id": "E737CD21",
+    "path": "~/work/diagnostics/ising/summary.R",
+    "project_path": "summary.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625432020805.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "cursorPosition": "331,15",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1624648607,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1624648607,
+    "read_only": false,
+    "read_only_alternatives": []
+}

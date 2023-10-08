@@ -1,0 +1,58 @@
+rm(list=ls())
+library(Rcpp); library(RcppArmadillo)
+library(doParallel); library(foreach)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+nprocs = 19
+# nprocs = 11
+
+
+
+#================================================================
+# Call data and functions
+#================================================================
+# dd = 1
+# dd = 2
+# dd = 3
+dd = 4
+# dd = 5
+
+load(paste0('ACDAIKS/Liang/simAppxLiang', dd, '.RData'))
+
+
+# ------------------------------------------------------------------------------
+# AIKS and p-value
+# ------------------------------------------------------------------------------
+p = ncol(Liang[[1]])
+nchains = length(appx)
+score = foreach(i = 1:nchains) %do% { appx[[i]][,1:p] }
+nrep = foreach(i = 1:nchains) %do% { sapply(1:nth[i], function(j) sum(th[[i]][j,1] == Liang[[i]][,1])) }
+score = foreach(i = 1:nchains, .combine = rbind) %do% { sapply(1:p, function(j) rep(score[[i]][,j], nrep[[i]])) }
+Liang = foreach(i = 1:nchains, .combine = rbind) %do% { Liang[[i]] }
+
+# nn = 200000
+nn = 250000
+indice = seq(25, nn, by = 25) # thinning
+score = score[indice,]
+Liang = Liang[indice,]
+niter = nrow(Liang)
+
+c = 1
+beta = -1/2
+# nb = 1000
+nb = 2000
+
+sourceCpp("RcppFtns.cpp")
+
+
+
+# -----------------------------
+ptm = proc.time()[3]
+aiksLiang = sum( apply(pAIKS_woWeight(Liang, score, c, beta, niter, nprocs+1), 2, sum)/(niter*(niter-1)) )
+timeaiksLiang = proc.time()[3] - ptm
+# save(aiksLiang, timeaiksLiang, file = paste0('ACDAIKS/Liang/n', nn, '/simAIKSLiang', dd, '.RData'))
+save(aiksLiang, timeaiksLiang, file = paste0('ACDAIKS/Liang/n', nn, '/b', nb, '/simAIKSLiang', dd, '.RData'))
+# -----------------------------
+

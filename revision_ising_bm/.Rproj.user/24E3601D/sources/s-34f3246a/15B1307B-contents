@@ -1,0 +1,70 @@
+rm(list=ls())
+library(snow)
+library(doParallel)
+library(foreach)
+library(Rcpp)
+library(RcppArmadillo)
+library(MASS)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+### set up for parallelization
+nprocs = 4
+# mp_type = "MPI"
+mp_type = "PSOCK"
+cl = parallel::makeCluster(nprocs, type=mp_type)
+doParallel::registerDoParallel(cl)
+
+
+
+#======================================================================
+# ACD
+#======================================================================
+# Nin = 1:5
+Nin = c(50, 100)
+
+for(k in Nin){
+  load(paste('simAppxLiang', k, '.RData', sep = ''))
+  
+  ptm = proc.time()[3]
+  nth = nrow(appx)
+  tn = sapply(1:nth, function(i) sum(th[i]==Liang))
+  repsam = rep(seq_len(nth), tn)
+  
+  Hmat = appx[repsam,2]
+  Jmat = appx[repsam,3]
+  g = -Hmat - Jmat
+  
+  niter = length(Hmat)
+  knots = seq(1000, niter, by = 100)
+
+  acdLiang = foreach(n = knots, .combine = 'rbind') %dopar% {
+    # # old (L-1 norm)
+    # library(batchmeans)
+    # Mn = bm(g[1:n])
+    # sum(abs(Mn$est))
+    
+    # weighted sum of cosine and length ratio
+    source('RFtns.R')
+    sensitivity = mean(-Hmat[1:n])
+    variability = mean(Jmat[1:n])
+    ACD(sensitivity, variability)
+    
+  }
+  timeacdLiang = proc.time()[3] - ptm
+  # save(acdLiang, knots, timeacdLiang, file = paste('simOldACDL1Liang', k, '.RData', sep = ''))
+  save(acdLiang, knots, timeacdLiang, file = paste('simNewACDLiang', k, '.RData', sep = ''))
+}
+
+
+
+# source('RFtns.R')
+# k = 5000
+# n = which(Liang == th[k])[length(which(Liang == th[k]))]
+# system.time({
+#   qn = sapply(1:k, function(i) sum(th[i]==Liang[1:n])/n)
+#   sensitivity = sum(appx[1:k,2]*qn)
+#   variability = sum(appx[1:k,3]*qn)
+#   ACD(sensitivity, variability)
+# })

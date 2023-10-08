@@ -1,0 +1,25 @@
+{
+    "id": "D6BB9B5D",
+    "path": "/storage/work/b/bxk487/diagnostics/revision_ergm_bm/aci_batch.pbs",
+    "project_path": "aci_batch.pbs",
+    "type": "text",
+    "hash": "3983627625",
+    "contents": "",
+    "dirty": false,
+    "created": 1676948812754.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "7,12",
+        "scrollLine": "0",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1677450197,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1677450197889,
+    "read_only": false,
+    "read_only_alternatives": []
+}

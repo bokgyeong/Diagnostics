@@ -1,0 +1,24 @@
+{
+    "id": "03140E79",
+    "path": "~/work/diagnostics/ising/LikEm.R",
+    "project_path": "LikEm.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625262916402.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "cursorPosition": "59,63",
+        "scrollLine": "34"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1625263179,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1625263179173,
+    "read_only": false,
+    "read_only_alternatives": []
+}

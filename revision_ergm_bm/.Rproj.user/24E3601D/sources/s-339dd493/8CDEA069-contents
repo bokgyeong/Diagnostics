@@ -1,0 +1,55 @@
+rm(list=ls())
+library(coda)
+library(ergm)
+library(Rcpp)
+library(RcppArmadillo)
+library(MASS)
+library(snow)
+library(doParallel)
+library(foreach)
+Sys.setenv("PKG_CXXFLAGS"="-fopenmp")
+Sys.setenv("PKG_LIBS"="-fopenmp")
+
+
+# # set up foreach
+# nprocs = 19
+# # mp_type = "MPI"
+# mp_type = "PSOCK"
+# cl = parallel::makeCluster(nprocs, type=mp_type)
+# doParallel::registerDoParallel(cl)
+
+
+#======================================================================
+# call data and functions
+#======================================================================
+load("simData.RData")
+load('simLiang.RData') # particles
+sourceCpp("RcppFtns.cpp")
+
+
+#======================================================================
+# Atchade
+#======================================================================
+Niter = 100000
+cycle = 1 # Atchade_d400m1
+# cycle = 5 # Atchade
+COV = diag(0.0025,2)
+formula = data ~ edges + gwesp(0.25,fixed=TRUE)
+m = ergm(formula, estimate="MPLE")
+initial = matrix(m$coef,1,2)
+
+# Finding efficient particles
+d = 400
+th = unique(Liang[[1]])[1001:(1000+d),]
+
+ptm = proc.time()[3]
+Atchade = ergmAtchade(Niter, cycle, COV, initial, th, X)
+timeAtchade = proc.time()[3] - ptm
+
+save(X, stat, Atchade, timeAtchade, file = "simAtchade_d400m1.RData") # d=400, cycle=1
+# save(X, stat, Atchade, timeAtchade, file = "simAtchade.RData") # d=400, cycle=5
+
+
+
+
+

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(coda)\nlibrary(ergm)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"simLikEm.RData\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\n#======================================================================\n# Compute the approximate score statistics\n#======================================================================\nLikEm = LikEm[[which(tunpar[,1] == 100 & tunpar[,2] == 500)]]\nburn = 10000\n# niter = nrow(LikEm)\nniter = 50000\nLikEm = LikEm[(burn+1):niter,]\nth = unique(LikEm)\nnth = nrow(th)\n\n\n\n# ### for thining\n# LikEm = LikEm[[which(tunpar[,1] == 100 & tunpar[,2] == 500)]]\n# burn = 10000\n# niter = nrow(LikEm)\n# LikEm = LikEm[seq(burn+50, niter, by = 50),]\n# th = unique(LikEm)\n# nth = nrow(th)\n\n\n\nN = 2000 # the number of y's to approximate score statistic\nn = nrow(LikEm)\nthhat = colMeans(LikEm)\n\n\n### Set up for foreach\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n# ### Simulate datasets and compute their summary statistics\n# ptm = proc.time()[3]\n# zLikEm = foreach::foreach(i = 1:nth, .combine = rbind, .packages = \"Rcpp\", .noexport = c(\"Choose\", \"countShared\", \"Gibbs\", \"pResponseErgm\", \"Summary\")) %dopar% {\n#   sourceCpp(\"RcppFtns.cpp\")\n#   \n#   Ystat = pResponseErgm(X, 100, thhat, N, 1) # 100 cycles of Gibbs\n#   nw = exp(Ystat %*% (th[i,] - thhat))\n#   w = nw/sum(nw)\n#   \n#   z1 = t(w)%*%(Ystat^2) \n#   z2 = t(w)%*%(Ystat)\n#   z3 = t(w)%*%(Ystat[,1]*Ystat[,2])\n#   c(z1, z2, z3)\n# }\n# timezLikEm = proc.time()[3] - ptm\n# save(LikEm, th, nth, stat, zLikEm, timezLikEm, file = \"simzLikEmd100N500.RData\")\n\n\n\n### For long sample path\ncpoint = c(seq(1, nth, by = 1000), nth+1)\nzLikEm = c(); resume = 1\n# resume = which(cpoint == nrow(zLikEm)+1)\n\nfor(c in resume:(length(cpoint)-1)){\n  res = foreach::foreach(i = cpoint[c]:(cpoint[c+1]-1), .combine = rbind, .packages = \"Rcpp\", .noexport = c(\"Choose\", \"countShared\", \"Gibbs\", \"pResponseErgm\", \"Summary\")) %dopar% {\n    sourceCpp(\"RcppFtns.cpp\")\n    \n    Ystat = pResponseErgm(X, 20, thhat, N, 1) # 100 cycles of Gibbs\n    nw = exp(Ystat %*% (th[i,] - thhat))\n    w = nw/sum(nw)\n    \n    z1 = t(w)%*%(Ystat^2) \n    z2 = t(w)%*%(Ystat)\n    z3 = t(w)%*%(Ystat[,1]*Ystat[,2])\n    c(z1, z2, z3)\n  }\n  \n  zLikEm = rbind(zLikEm, res)\n  save(LikEm, th, nth, stat, zLikEm, file = \"simzLikEmd100N500.RData\")\n}\n  \n",
+    "created" : 1609701282121.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "27470607",
+    "id" : "553A6A15",
+    "lastKnownWriteTime" : 1608318125,
+    "last_content_update" : 1608318125,
+    "path" : "~/work/diagnostics/ergm/magnolia/zFuncEmd100N500.R",
+    "project_path" : "zFuncEmd100N500.R",
+    "properties" : {
+    },
+    "relative_order" : 14,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

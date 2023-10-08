@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(fields) # rdist\nlibrary(coda)   # HPD interval\nlibrary(ergm)\n# library(igraphdata) # karate dataset\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(DiceKriging)\nlibrary(DiceDesign)\nlibrary(MASS)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n\nset.seed(77)\n#======================================================================\n# Call data and functions\n#======================================================================\nload(\"simData.RData\")\n# data(karate)\nsource(\"RFtns.R\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\n#======================================================================\n# GP MCMC sampling\n#======================================================================\nd = c(100, 200, 400) # no. of particles\nN = c(500, 1000)     # no. of IS estimates\ntunpar = matrix(c(rep(d, each = length(N)), rep(N, length(d))), ncol = 2)\n\nNiter = 100000\n\nk = 0\n# NormEm = list()\nLikEm = list()\nfor(i in 1:length(d)){\n  temp = partABC(X, stat, m, d[i], 80)\n  th = temp[[1]]\n  thABC = temp[[2]]\n  \n  # Different N at the same particles\n  for(j in 1:length(N)){\n    k = k+1\n    # NormEm[[k]] = GPmcmcErgm(Niter, X, stat, th, thABC, N[j], 100, 20, FALSE)\n    LikEm[[k]] = GPmcmcErgm(Niter, X, stat, th, thABC, N[j], 100, 80, TRUE) # 100 cycles of Gibbs updates for IS estimation\n  }\n}\n\n\nsave(X, stat, tunpar, Niter, LikEm, file = \"simLikEm.RData\")\n\n\n",
+    "created" : 1611589111336.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "378586616",
+    "id" : "8E052156",
+    "lastKnownWriteTime" : 1607909495,
+    "last_content_update" : 1607909495,
+    "path" : "~/work/diagnostics/ergm/magnolia/FuncEm.R",
+    "project_path" : "FuncEm.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,24 @@
+{
+    "id": "B7A711D8",
+    "path": "~/work/diagnostics/ising/appxAEX.R",
+    "project_path": "appxAEX.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625320203961.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "cursorPosition": "60,29",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1625320212,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1625320212529,
+    "read_only": false,
+    "read_only_alternatives": []
+}

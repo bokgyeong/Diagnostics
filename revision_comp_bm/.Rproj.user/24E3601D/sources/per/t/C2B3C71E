@@ -1,0 +1,26 @@
+{
+    "id": "C2B3C71E",
+    "path": "~/work/diagnostics/revision_comp_bm/appxTrunc_knu.R",
+    "project_path": "appxTrunc_knu.R",
+    "type": "r_source",
+    "hash": "1709696206",
+    "contents": "",
+    "dirty": false,
+    "created": 1677280912960.0,
+    "source_on_save": false,
+    "relative_order": 13,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "8,37",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1677343031,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1677343031,
+    "read_only": false,
+    "read_only_alternatives": []
+}

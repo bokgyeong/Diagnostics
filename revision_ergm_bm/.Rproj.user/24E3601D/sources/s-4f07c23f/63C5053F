@@ -1,0 +1,24 @@
+{
+    "id": "63C5053F",
+    "path": "~/work/diagnostics/ergm/magnolia/summaryNew.R",
+    "project_path": "summaryNew.R",
+    "type": "r_source",
+    "hash": "1928739016",
+    "contents": "",
+    "dirty": false,
+    "created": 1626058079239.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "cursorPosition": "187,42",
+        "scrollLine": "178"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1626204566,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1626204566166,
+    "read_only": false,
+    "read_only_alternatives": []
+}

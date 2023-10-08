@@ -1,0 +1,43 @@
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+
+The following have been reloaded with a version change:
+  1) gcc/8.3.1 => gcc/9.3.1
+
+ 
+ 
+Job started on comp-sc-0170.acib.production.int.aci.ics.psu.edu at Fri Feb 24 16:10:34 EST 2023
+
+The following have been reloaded with a version change:
+  1) gcc/9.3.1 => gcc/8.3.1
+
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: parallel
+
+Attaching package: ‘parallel’
+
+The following objects are masked from ‘package:snow’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, clusterSplit, makeCluster, parApply,
+    parCapply, parLapply, parRapply, parSapply, splitIndices,
+    stopCluster
+
+ 
+Job Ended at Fri Feb 24 16:51:09 EST 2023
+ 

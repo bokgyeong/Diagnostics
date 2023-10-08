@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(fields)\nlibrary(lattice)\nlibrary(coda)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(xtable)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n#========================================================================\n# Call a dataset, saved images, and functions\n#========================================================================\n# load(\"isingData020.RData\")\nload(\"isingData043.RData\")\n# load(\"Liang020.RData\")\nload(\"Liang043.RData\")\nsource(\"http://personal.psu.edu/muh10/MCMCtut/batchmeans.R\")\nsource(\"RFtns.R\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n#========================================================================\n# Approximate score and hessian\n#========================================================================\nLiang = Liang[[which(Nin==5)]]\n\nN = 1000 # no of simulated datasets used to approximate the score statistic\nn = nrow(X)\nJ = nrow(Liang)\nSx = Energy(X) # Summary statistic of the observed data\n\n\n### set up for paralellization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n### simulation by perfect sampler\nptm = proc.time()[3]\nzLiangIn5 = foreach::foreach(j = 1:J, .combine = rbind, .packages = \"Rcpp\", .noexport = c(\"Energe\", \"pAuxStatPerf\", \"ProppWilson\")) %dopar% {\n  sourceCpp(\"RcppFtns.cpp\")\n  Sys = pAuxStatPerf(n, n, Liang[j,], N, 1)\n  z1 = colMeans(Sys^2) \n  z2 = colMeans(Sys)\n  c(z1, z2)\n}\ntimezLiangIn5 = proc.time()[3] - ptm\n# save(Sx, zLiangIn5, timezLiangIn5, file = \"zLiang020In5Perf.RData\")\nsave(Sx, zLiangIn5, timezLiangIn5, file = \"zLiang043In5Perf.RData\")",
+    "created" : 1600462432904.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3158605230",
+    "id" : "1A0F6C69",
+    "lastKnownWriteTime" : 1600543215,
+    "last_content_update" : 1600543215166,
+    "path" : "/storage/work/b/bxk487/approxKSD/ising/zLiangIn5.R",
+    "project_path" : "zLiangIn5.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

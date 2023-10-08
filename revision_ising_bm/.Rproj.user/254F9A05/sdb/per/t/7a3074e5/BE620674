@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#PBS -A open\n#PBS -l nodes=1:ppn=20\n#PBS -l pmem=12gb\n#PBS -l walltime=47:50:00\n#PBS -j oe\n#PBS -m abe\n#PBS -M bxk487@psu.edu\n\n\necho \" \"\necho \" \"\necho \"Job started on `hostname` at `date`\"\n\ncd $PBS_O_WORKDIR\n\n\nmodule load gcc/5.3.1 \nmodule load openmpi/1.10.1\n\nmpirun -np 1 -machinefile $PBS_NODEFILE Rscript zLiangIn50.R\n\n\necho \" \"\necho \"Job Ended at `date`\"\necho \" \"\n\n\n\n",
+    "created" : 1600478189636.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4119863356",
+    "id" : "BE620674",
+    "lastKnownWriteTime" : 1600478191,
+    "last_content_update" : 1600478191575,
+    "path" : "/storage/work/bxk487/approxKSD/ising/aci_zLiangIn50_mpi.pbs",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 12,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

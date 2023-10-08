@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(fields)\nlibrary(lattice)\nlibrary(coda)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(xtable)\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\n#========================================================================\n# Call a dataset, saved images, and functions\n#========================================================================\n# load(\"isingData020.RData\")\nload(\"isingData020n30.RData\")\n# load(\"isingData043.RData\")\nsource(\"http://personal.psu.edu/muh10/MCMCtut/batchmeans.R\")\nsource(\"RFtns.R\")\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\nset.seed(177)\n#========================================================================\n# Conduct Liang's DMH\n#========================================================================\n# n = 10                     # number of lattice size\nn = 30\n# Nout = 50000                  # number of MCMC RUN\nNout = 1010000\nNin = c(1, 3, 5, 10, 30, 50, 70, 100)\n# Nout = 260000\n# Nin = 1000\n# Nin = 3\n# Nin = 10\n# Nin = 50\n\n\n\n### set up for paralellization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n### Doulbe MH\nptm = proc.time()[3]\nLiang = foreach::foreach(i = Nin, .packages = \"Rcpp\", .noexport = c(\"Energe\", \"Gibb\", \"IsingDMH\")) %dopar% {\n  sourceCpp(\"RcppFtns.cpp\")\n  IsingDMH(Nout, i, MPLE, 0.1, X)\n}\nTimeLiang = proc.time()[3] - ptm\n# save(Nin, Liang, TimeLiang, file = \"Liang020.RData\")\n# save(Nin, Liang, TimeLiang, file = \"Liang043.RData\")\nsave(Nin, Liang, TimeLiang, file = \"Liang020n30.RData\")\n\n# ### Double MH\n# ptm = proc.time()[3]\n# Liang = IsingDMH(Nout, Nin, MPLE, 0.1, X)\n# TimeLiang = proc.time()[3] - ptm\n# # save(Nin, Liang, TimeLiang, file = \"Liang020In1000.RData\")\n# # save(Nin, Liang, TimeLiang, file = \"Liang020In3_thin.RData\")\n# # save(Nin, Liang, TimeLiang, file = \"Liang020In10_thin.RData\")\n# save(Nin, Liang, TimeLiang, file = \"Liang020In50_thin.RData\")\n\n\n",
+    "created" : 1603076272215.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2330276252",
+    "id" : "E6F4961F",
+    "lastKnownWriteTime" : 1602120486,
+    "last_content_update" : 1602120486,
+    "path" : "~/work/approxKSD/ising/isingLiang.R",
+    "project_path" : "isingLiang.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "rm(list=ls())\nlibrary(snow)\nlibrary(doParallel)\nlibrary(foreach)\nlibrary(Rcpp)\nlibrary(RcppArmadillo)\nlibrary(MASS)\nSys.setenv(\"PKG_CXXFLAGS\"=\"-fopenmp\")\nSys.setenv(\"PKG_LIBS\"=\"-fopenmp\")\n\nset.seed(123)\n#======================================================================\n# Call data and functions\n#================================================================\nsourceCpp(\"RcppFtns.cpp\")\n\n\n\n#======================================================================\n# Diagnostic quantity\n#======================================================================\n# Nin = c(1, 3, 5, 10, 30, 50, 70, 100)\nNin = c(1, 5, 50, 100)\n\n\n### set up for parallelization\nnprocs = 19\nmp_type = \"MPI\"\n# mp_type = \"PSOCK\"\ncl = parallel::makeCluster(nprocs, type=mp_type)\ndoParallel::registerDoParallel(cl)\n\n\n\n# for(k in Nin){\n#   \n#   load(paste(\"simzLiangIn\", k, \".RData\", sep = \"\"))\n#   \n#   regint = seq(1000, length(Liang), by = 1000)\n#   idx = sapply(regint, function(i) which(Liang[i] == th))\n#   \n#   ptm = proc.time()[3]\n#   bart = foreach(j = idx, .combine = 'rbind') %dopar% {\n#     \n#     m = which(idx == j)\n#     n = regint[m]\n#     qn = sapply(1:j, function(i) sum(th[i]==Liang[1:n])/n)\n#     \n#     # I Tilde\n#     Ihat = t(qn) %*% (z[1:j,1] - (z[1:j,2])^2)\n#     \n#     # J Tilde\n#     Uhat = sapply(1:j, function(ell) Sx - z[ell,2])\n#     Jhat = t(qn) %*% (Uhat^2)\n#     \n#     # inv = sqrt((Ihat/Jhat - 1)^2)\n#     inv = sqrt((Jhat/Ihat - 1)^2)\n#     dif = abs(Ihat - Jhat)\n#     \n#     c(inv, dif)\n#   }\n#   timebart = proc.time()[3] - ptm\n#   \n#   # save(regint, bart, file = paste(\"simB2LiangIn\", k, \".RData\", sep = \"\"))\n#   save(regint, bart, file = paste(\"simB2LiangIn\", k, \"mod.RData\", sep = \"\"))\n# }\n\n\n\nload('simzLiangIn1.RData')\n\nregint = c(10000, 50000, 90000)\nidx = sapply(regint, function(i) which(Liang[i] == th))\n\ntimebart = foreach(j = idx, .combine = 'c') %dopar% {\n  ptm = proc.time()[3]\n  \n  m = which(idx == j)\n  n = regint[m]\n  qn = sapply(1:j, function(i) sum(th[i]==Liang[1:n])/n)\n  \n  # I Tilde\n  Ihat = t(qn) %*% (z[1:j,1] - (z[1:j,2])^2)\n  \n  # J Tilde\n  Uhat = sapply(1:j, function(ell) Sx - z[ell,2])\n  Jhat = t(qn) %*% (Uhat^2)\n  \n  # inv = sqrt((Ihat/Jhat - 1)^2)\n  inv = sqrt((Jhat/Ihat - 1)^2)\n  dif = abs(Ihat - Jhat)\n  \n  proc.time()[3] - ptm\n}\nsave(regint, timebart, file = 'simB2TimeLiangIn1.RData')\n\n",
+    "created" : 1607836154242.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2121469157",
+    "id" : "B220E66F",
+    "lastKnownWriteTime" : 1611157682,
+    "last_content_update" : 1611157682288,
+    "path" : "~/work/diagnostics/ising/b2Liang.R",
+    "project_path" : "b2Liang.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

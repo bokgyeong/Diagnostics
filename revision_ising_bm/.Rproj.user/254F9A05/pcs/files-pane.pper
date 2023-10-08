@@ -1,0 +1,9 @@
+{
+    "path" : "~/work/diagnostics/ising",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

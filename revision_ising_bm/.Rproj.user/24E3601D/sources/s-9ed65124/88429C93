@@ -1,0 +1,24 @@
+{
+    "id": "88429C93",
+    "path": "~/work/diagnostics/ising/Atchade.R",
+    "project_path": "Atchade.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625428227501.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "cursorPosition": "34,2",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1625278682,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1625278682,
+    "read_only": false,
+    "read_only_alternatives": []
+}

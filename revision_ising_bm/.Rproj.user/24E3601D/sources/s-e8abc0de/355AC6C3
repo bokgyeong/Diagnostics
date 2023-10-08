@@ -1,0 +1,24 @@
+{
+    "id": "355AC6C3",
+    "path": "~/work/diagnostics/ising/summaryNew.R",
+    "project_path": "summaryNew.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1625257613765.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "cursorPosition": "118,54",
+        "scrollLine": "98"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1625261756,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1625261756367,
+    "read_only": false,
+    "read_only_alternatives": []
+}
