@@ -1,8 +1,5 @@
-Supplemental Code for "Diagnostics for Monte Carlo algorithms for models with intractable normalizing functions."
+Ising Model
 ========
-Authors: Bokgyeong Kang, John Hughes, and Murali Haran
-
-This repository contains source code and supplemental materials from the manuscript, "Diagnostics for Monte Carlo algorithms for models with intractable normalizing functions."
 
 
 Install required R packages and call R and Rcpp functions
