@@ -1,0 +1,16 @@
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# Output files from R CMD build
+/*.tar.gz
+
+# RStudio files
+.Rproj.user/
+
+# Folders
+old/
